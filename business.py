@@ -64,6 +64,16 @@ def create_new_room(cursor, user_id, username):
 
 
 @data_handler.connection_handler
+def delete_room(cursor, room_id):
+    query = '''
+            DELETE
+            FROM rooms
+            WHERE id = %(room_id)s
+            '''
+    cursor.execute(query, {'room_id': room_id})
+
+
+@data_handler.connection_handler
 def get_open_rooms(cursor):
     query = '''
             SELECT

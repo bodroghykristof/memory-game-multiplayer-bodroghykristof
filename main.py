@@ -50,5 +50,12 @@ def add_room():
     return jsonify(room_data)
 
 
+@app.route('/delete-room', methods=['DELETE'])
+def delete_room():
+    room_id = request.get_json()
+    business.delete_room(room_id)
+    return jsonify(room_id)
+
+
 if __name__ == '__main__':
     socketio.run(app)
