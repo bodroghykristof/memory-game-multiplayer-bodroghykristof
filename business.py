@@ -36,7 +36,10 @@ def register_user(cursor, username, password):
 @data_handler.connection_handler
 def check_login_data(cursor, username, password):
     query = '''
-        SELECT hashed_password AS password
+        SELECT
+            id,
+            username,
+            hashed_password AS password
         FROM users
         WHERE username = %(username)s
         '''
@@ -44,4 +47,17 @@ def check_login_data(cursor, username, password):
     user_record = cursor.fetchone()
     if user_record:
         valid_password = user_record['password']
-        return verify_password(password, valid_password)
+        if verify_password(password, valid_password):
+            return user_record
+
+
+@data_handler.connection_handler
+def create_new_room(cursor, user_id, username):
+    query = '''
+        INSERT INTO rooms
+        (user_id_one, username_one)
+        VALUES (%(user_id)s, %(username)s)
+        RETURNING user_id_one AS user_id, username_one AS username, id AS room_id
+        '''
+    cursor.execute(query, {'user_id': user_id, 'username': username})
+    return cursor.fetchone()

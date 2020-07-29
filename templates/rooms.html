@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rooms.css') }}">
 </head>
 <body>
-    <p>Rooms</p>
+    <h1>Multiplayer Memory Game</h1>
+    <div class="boards">
+        <div class="room-board join-room">
+            <h3>Join Room</h3>
+        </div>
+        <div class="room-board spectate-room">
+            <h3>Spectate Room</h3>
+        </div>
+        <div class="room-board create-room">
+            <h3>Create Room</h3>
+            <button id="create-button" data-username="{{ session.username }}"
+                    data-userid="{{ session.user_id }}">Create New Room</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/rooms.js') }}" type="module" defer></script>
 </body>
 </html>

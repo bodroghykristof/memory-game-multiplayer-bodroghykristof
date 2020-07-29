@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_socketio import SocketIO
 import business
 
@@ -12,7 +12,11 @@ def main_page():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if business.check_login_data(username, password):
+        user_record = business.check_login_data(username, password)
+        if user_record:
+            session['username'] = user_record['username']
+            session['user_id'] = user_record['id']
+            print(session)
             return redirect(url_for('rooms'))
     return render_template('login.html')
 
@@ -33,7 +37,17 @@ def register():
 
 @app.route('/rooms')
 def rooms():
+    print(session)
     return render_template('rooms.html')
+
+
+@app.route('/add-room', methods=['POST'])
+def add_room():
+    user_data = request.get_json()
+    username = user_data['username']
+    user_id = user_data['user_id']
+    room_data = business.create_new_room(user_id, username)
+    return jsonify(room_data)
 
 
 if __name__ == '__main__':
