@@ -1,0 +1,30 @@
+.game-field {
+    margin: 50px auto;
+    text-align: center;
+}
+
+.game-field table {
+    text-align: center;
+    margin: auto;
+}
+
+.game-field table td {
+    background-color: lightgray;
+    border: solid black 2px;
+    width: 40px;
+    height: 40px;
+}
+
+.chat-box {
+    text-align: center;
+    display: inline-block;
+    margin: 0 30px 30px 30px;
+    padding: 10px;
+}
+
+.message-board {
+    min-height: 450px;
+    background-color: white;
+    border: solid black 2px;
+    margin: 10px 0;
+}
