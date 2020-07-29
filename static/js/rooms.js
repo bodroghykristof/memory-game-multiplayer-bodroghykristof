@@ -90,7 +90,7 @@ function joinRoom() {
 }
 
 
-function startNewGame() {
-    alert('Hello')
+function startNewGame(data) {
+    localStorage.setItem('room', data)
     window.location.replace('/game');
 }
