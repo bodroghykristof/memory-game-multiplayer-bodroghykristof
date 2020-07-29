@@ -61,3 +61,16 @@ def create_new_room(cursor, user_id, username):
         '''
     cursor.execute(query, {'user_id': user_id, 'username': username})
     return cursor.fetchone()
+
+
+@data_handler.connection_handler
+def get_open_rooms(cursor):
+    query = '''
+            SELECT
+                id,
+                user_id_one AS user_id,
+                username_one AS username
+            FROM rooms
+            '''
+    cursor.execute(query)
+    return cursor.fetchall()

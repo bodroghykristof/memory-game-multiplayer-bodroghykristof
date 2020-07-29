@@ -1,9 +1,10 @@
 .room-board {
     width: 25%;
-    height: 500px;
+    min-height: 500px;
     border: black solid 5px;
     border-radius: 15px;
     background-color: lightgray;
+    margin-bottom: 20px;
 }
 
 .join-room {

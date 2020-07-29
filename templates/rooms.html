@@ -11,6 +11,13 @@
     <div class="boards">
         <div class="room-board join-room">
             <h3>Join Room</h3>
+            {% for room in rooms %}
+                <div class="room">
+                    <h4>Room number {{ room.id }}</h4>
+                    <p><b>Player one:</b> {{ room.username }}</p>
+                    <p>Waiting for another player to join...</p>
+                </div>
+            {% endfor %}
         </div>
         <div class="room-board spectate-room">
             <h3>Spectate Room</h3>

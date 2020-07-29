@@ -37,8 +37,8 @@ def register():
 
 @app.route('/rooms')
 def rooms():
-    print(session)
-    return render_template('rooms.html')
+    open_rooms = business.get_open_rooms()
+    return render_template('rooms.html', rooms=open_rooms)
 
 
 @app.route('/add-room', methods=['POST'])
