@@ -9,6 +9,7 @@
 <body>
     <h1>Multiplayer Memory Game</h1>
     <h3>Logged in as <span class="username-info" data-userid="{{ session.user_id }}">{{ session.username }}</span></h3>
+    <p class="logout-section"><a href="{{ url_for('logout') }}"><button>Logout</button></a></p>
     <div class="boards">
         <div class="room-board join-room">
             <h3>Join Room</h3>

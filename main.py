@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-from flask_socketio import SocketIO, join_room, leave_room
+from flask_socketio import SocketIO, join_room, leave_room, emit
 import business
 import json
 
@@ -58,6 +58,18 @@ def delete_room():
     return jsonify(room_id)
 
 
+@app.route('/game')
+def game():
+    return render_template('game.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    session.pop('user_id', None)
+    return redirect(url_for("main_page"))
+
+
 @socketio.on('create')
 def create_new_room(room):
     join_room(room)
@@ -72,6 +84,7 @@ def join_open_room(room_info):
     user_id = info_object['userid']
     business.mark_room_as_closed(room_number, username, user_id)
     join_room(room_number)
+    emit('start_game', room=room_number)
     # TODO: real-time update of closing rooms
 
 

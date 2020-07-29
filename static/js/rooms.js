@@ -1,6 +1,7 @@
 import {data_handler} from "./data_handler.js";
 
 const socket = io.connect('http://127.0.0.1:5000/');
+socket.addEventListener('start-game', startNewGame);
 
 
 init();
@@ -86,4 +87,10 @@ function joinRoom() {
     const userid = localStorage.getItem('userid');
     const roomInfo =  {username: username, roomNumber: roomNumber, userid: userid}
     socket.emit('join', JSON.stringify(roomInfo));
+    window.location.replace('/game');
+}
+
+
+function startNewGame() {
+    window.location.replace('/game');
 }
