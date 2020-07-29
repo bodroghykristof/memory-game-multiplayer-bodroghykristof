@@ -23,3 +23,9 @@
     text-align: center;
     padding: 50px 20px;
 }
+
+#create-button {
+    border-radius: 3px;
+    font-size: 110%;
+    margin-top: 15px;
+}
