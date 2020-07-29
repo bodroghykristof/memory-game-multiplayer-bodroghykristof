@@ -85,7 +85,7 @@ def join_open_room(room_info):
     user_id = info_object['userid']
     business.mark_room_as_closed(room_number, username, user_id)
     join_room(room_number)
-    generated_map = json.dumps(business.generate_map(10))
+    generated_map = json.dumps(business.generate_map(6))
     emit('save_map', generated_map, room=room_number)
     emit('start_game', room_number, room=room_number)
     # TODO: real-time update of closing rooms
