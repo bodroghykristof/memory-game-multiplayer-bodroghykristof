@@ -14,9 +14,18 @@ function setupConnection() {
 
 function createMap() {
     let numbers = JSON.parse(localStorage.getItem('map'));
-    for (let number of numbers) {
-        console.log(number)
+    const gameField = document.querySelector('.game-field');
+    let gameTable = document.createElement('table');
+    let tableContent = `<tr>`
+    for (let cell = 0; cell < numbers.length; cell++) {
+        tableContent += `<td>${numbers[cell]}</td>`
+        if (cell % 10 === 9 && cell !== 99) {
+            tableContent += `</tr><tr>`
+        }
     }
+    tableContent += `</tr>`
+    gameTable.innerHTML = tableContent;
+    gameField.appendChild(gameTable);
 }
 
 
