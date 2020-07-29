@@ -17,9 +17,10 @@
         </div>
         <div class="room-board create-room">
             <h3>Create Room</h3>
-            <button id="create-button">Create New Room</button>
+            <button id="create-button" data-username="{{ session.username }}"
+                    data-userid="{{ session.user_id }}">Create New Room</button>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/rooms.js') }}" type="text/javascript" defer></script>
+    <script src="{{ url_for('static', filename='js/rooms.js') }}" type="module" defer></script>
 </body>
 </html>

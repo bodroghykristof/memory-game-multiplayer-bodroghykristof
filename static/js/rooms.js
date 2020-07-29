@@ -1,3 +1,6 @@
+import {data_handler} from "./data_handler.js";
+
+
 init();
 
 function init() {
@@ -10,5 +13,12 @@ function addCreatingRoomFunctionality() {
 }
 
 function createNewRoom() {
-    fetch
+    const userId = this.dataset.userid;
+    const userName = this.dataset.username;
+    const userData = {username: userName, user_id: userId}
+    data_handler._api_post('/add-room', userData, displayNewRoom)
+}
+
+function displayNewRoom() {
+    console.log('Semi-success')
 }
