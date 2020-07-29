@@ -86,3 +86,15 @@ def get_open_rooms(cursor):
             '''
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@data_handler.connection_handler
+def mark_room_as_closed(cursor, room_number, username, user_id):
+    query = '''
+            UPDATE rooms
+            SET
+                username_two = %(username)s,
+                user_id_two = %(user_id)s
+            WHERE id = %(room_number)s
+            '''
+    cursor.execute(query, {'username': username, 'user_id': user_id, 'room_number': room_number})
