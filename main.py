@@ -98,6 +98,7 @@ def leave_current_room(room):
 @socketio.on('message')
 def get_message(data):
     room = json.loads(data)['room']
+    map = business.generate_map(10)
     emit('message', 'hello', room=room)
     # TODO: real-time update of deleted rooms
 
