@@ -37,8 +37,8 @@ def register():
 
 @app.route('/rooms')
 def rooms():
-    print(session)
-    return render_template('rooms.html')
+    open_rooms = business.get_open_rooms()
+    return render_template('rooms.html', rooms=open_rooms)
 
 
 @app.route('/add-room', methods=['POST'])
@@ -48,6 +48,13 @@ def add_room():
     user_id = user_data['user_id']
     room_data = business.create_new_room(user_id, username)
     return jsonify(room_data)
+
+
+@app.route('/delete-room', methods=['DELETE'])
+def delete_room():
+    room_id = request.get_json()
+    business.delete_room(room_id)
+    return jsonify(room_id)
 
 
 if __name__ == '__main__':

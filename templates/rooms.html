@@ -8,12 +8,33 @@
 </head>
 <body>
     <h1>Multiplayer Memory Game</h1>
+    <h3>Logged in as {{ session.username }}</h3>
     <div class="boards">
         <div class="room-board join-room">
             <h3>Join Room</h3>
+            {% for room in rooms %}
+                {% if not room.username_two %}
+                    <div class="room">
+                        <h4>Room number {{ room.id }}</h4>
+                        <p><b>Player one:</b> {{ room.username_one }}</p>
+                        <p>Waiting for another player to join...</p>
+                        <button>Join</button>
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
         <div class="room-board spectate-room">
             <h3>Spectate Room</h3>
+            {% for room in rooms %}
+                {% if room.username_two %}
+                    <div class="room">
+                        <h4>Room number {{ room.id }}</h4>
+                        <p><b>Player one:</b> {{ room.username_one }}</p>
+                        <p><b>Player two:</b> {{ room.username_two }}</p>
+                        <button>Spectate</button>
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
         <div class="room-board create-room">
             <h3>Create Room</h3>

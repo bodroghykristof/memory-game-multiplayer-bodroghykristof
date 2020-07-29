@@ -1,9 +1,10 @@
 .room-board {
     width: 25%;
-    height: 500px;
+    min-height: 500px;
     border: black solid 5px;
     border-radius: 15px;
     background-color: lightgray;
+    margin-bottom: 20px;
 }
 
 .join-room {
@@ -24,7 +25,7 @@
     padding: 50px 20px;
 }
 
-#create-button {
+button {
     border-radius: 3px;
     font-size: 110%;
     margin-top: 15px;
@@ -36,4 +37,5 @@
     border-radius: 5px;
     width: 80%;
     margin: 20px auto;
+    padding: 10px;
 }

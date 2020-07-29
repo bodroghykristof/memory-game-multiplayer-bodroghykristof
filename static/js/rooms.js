@@ -19,10 +19,18 @@ function createNewRoom() {
     data_handler._api_post('/add-room', userData, displayNewRoom)
 }
 
+
+function deleteRoom() {
+    const usersRoom = document.querySelector('.create-room .room');
+    const roomId = usersRoom.dataset.roomId;
+    data_handler._api_delete('/delete-room', roomId, removeRoom);
+}
+
 function displayNewRoom(data) {
     changeButton();
     let waitingRoom = document.createElement('div');
     waitingRoom.classList.add('room');
+    waitingRoom.dataset.roomId = data.room_id;
     waitingRoom.innerHTML = `
         <h4>Room number ${data.room_id}</h4>
         <p><b>Player one:</b> ${data.username}</p>
@@ -31,13 +39,20 @@ function displayNewRoom(data) {
     document.querySelector('.create-room').appendChild(waitingRoom);
 }
 
-function changeButton() {
-    const createButton = document.querySelector('#create-button');
-    createButton.innerHTML = 'Delete room';
-    createButton.removeEventListener('click', createNewRoom);
-    createButton.addEventListener('click', deleteRoom);
+function removeRoom() {
+    document.querySelector('.create-room .room').remove();
+    changeButton();
 }
 
-function deleteRoom() {
-    alert('Success');
+function changeButton() {
+    const createButton = document.querySelector('#create-button');
+    if (createButton.innerHTML === 'Create New Room') {
+        createButton.innerHTML = 'Delete Room';
+        createButton.removeEventListener('click', createNewRoom);
+        createButton.addEventListener('click', deleteRoom);
+    } else {
+        createButton.innerHTML = 'Create New Room';
+        createButton.removeEventListener('click', deleteRoom);
+        createButton.addEventListener('click', createNewRoom);
+    }
 }
