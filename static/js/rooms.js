@@ -22,10 +22,10 @@ function createNewRoom() {
 function displayNewRoom(data) {
     changeButton();
     let waitingRoom = document.createElement('div');
-    waitingRoom.classList.add('waiting-room');
+    waitingRoom.classList.add('room');
     waitingRoom.innerHTML = `
         <h4>Room number ${data.room_id}</h4>
-        <p>Player one: ${data.username}</p>
+        <p><b>Player one:</b> ${data.username}</p>
         <p>Waiting for another player to join...</p>
     `
     document.querySelector('.create-room').appendChild(waitingRoom);
