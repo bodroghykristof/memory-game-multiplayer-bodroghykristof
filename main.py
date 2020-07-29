@@ -61,6 +61,7 @@ def delete_room():
 @socketio.on('create')
 def create_new_room(room):
     join_room(room)
+    # TODO: real-time update of new rooms
 
 
 @socketio.on('join')
@@ -71,11 +72,13 @@ def join_open_room(room_info):
     user_id = info_object['userid']
     business.mark_room_as_closed(room_number, username, user_id)
     join_room(room_number)
+    # TODO: real-time update of closing rooms
 
 
 @socketio.on('leave')
 def leave_current_room(room):
     leave_room(room)
+    # TODO: real-time update of deleted rooms
 
 
 if __name__ == '__main__':
