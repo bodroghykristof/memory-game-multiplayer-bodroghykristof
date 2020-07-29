@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_socketio import SocketIO
 import business
 
@@ -46,8 +46,8 @@ def add_room():
     user_data = request.get_json()
     username = user_data['username']
     user_id = user_data['user_id']
-    business.create_new_room(user_id, username)
-    return '202'
+    room_data = business.create_new_room(user_id, username)
+    return jsonify(room_data)
 
 
 if __name__ == '__main__':

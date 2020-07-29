@@ -57,5 +57,7 @@ def create_new_room(cursor, user_id, username):
         INSERT INTO rooms
         (user_id_one, username_one)
         VALUES (%(user_id)s, %(username)s)
+        RETURNING user_id_one AS user_id, username_one AS username, id AS room_id
         '''
     cursor.execute(query, {'user_id': user_id, 'username': username})
+    return cursor.fetchone()

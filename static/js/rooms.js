@@ -19,6 +19,25 @@ function createNewRoom() {
     data_handler._api_post('/add-room', userData, displayNewRoom)
 }
 
-function displayNewRoom() {
-    console.log('Semi-success')
+function displayNewRoom(data) {
+    changeButton();
+    let waitingRoom = document.createElement('div');
+    waitingRoom.classList.add('waiting-room');
+    waitingRoom.innerHTML = `
+        <h4>Room number ${data.room_id}</h4>
+        <p>Player one: ${data.username}</p>
+        <p>Waiting for another player to join...</p>
+    `
+    document.querySelector('.create-room').appendChild(waitingRoom);
+}
+
+function changeButton() {
+    const createButton = document.querySelector('#create-button');
+    createButton.innerHTML = 'Delete room';
+    createButton.removeEventListener('click', createNewRoom);
+    createButton.addEventListener('click', deleteRoom);
+}
+
+function deleteRoom() {
+    alert('Success');
 }
