@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_socketio import SocketIO
 import business
 
@@ -12,7 +12,8 @@ def main_page():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        business.check_login_data()
+        if business.check_login_data(username, password):
+            return redirect(url_for('rooms'))
     return render_template('login.html')
 
 
@@ -24,9 +25,15 @@ def register():
         password_two = request.form.get('password-two')
         if password_one == password_two and not business.username_is_already_used(username):
             business.register_user(username, password_one)
+            return redirect(url_for('main_page'))
         else:
             return render_template('register.html')
     return render_template('register.html')
+
+
+@app.route('/rooms')
+def rooms():
+    return render_template('rooms.html')
 
 
 if __name__ == '__main__':
