@@ -78,8 +78,10 @@ def get_open_rooms(cursor):
     query = '''
             SELECT
                 id,
-                user_id_one AS user_id,
-                username_one AS username
+                user_id_one,
+                username_one,
+                user_id_two,
+                username_two
             FROM rooms
             '''
     cursor.execute(query)

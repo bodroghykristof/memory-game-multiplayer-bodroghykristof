@@ -25,7 +25,7 @@
     padding: 50px 20px;
 }
 
-#create-button {
+button {
     border-radius: 3px;
     font-size: 110%;
     margin-top: 15px;
@@ -37,4 +37,5 @@
     border-radius: 5px;
     width: 80%;
     margin: 20px auto;
+    padding: 10px;
 }
