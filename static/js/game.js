@@ -1,20 +1,37 @@
 import {data_handler} from "./data_handler.js";
 
 const socket = io.connect('http://127.0.0.1:5000/');
-socket.emit('create', localStorage.getItem('room'))
-socket.addEventListener('connect', logConnectionOnServer);
-socket.addEventListener('message', alertData)
+const roomNumber = localStorage.getItem('room');
 
-let button = document.querySelector('button')
-button.addEventListener('click', function () {
-    let data = JSON.stringify({data: 'Hello', room: localStorage.getItem('room')})
-    socket.emit('message', data)
-})
-
-function alertData(data) {
-    console.log(data)
+function init() {
+    setupConnection();
+    createMap();
 }
 
-function logConnectionOnServer() {
-    alert('Gotcha')
+function setupConnection() {
+    socket.emit('create', roomNumber);
 }
+
+function createMap() {
+    let numbers = JSON.parse(localStorage.getItem('map'));
+    for (let number of numbers) {
+        console.log(number)
+    }
+}
+
+
+init();
+
+
+
+// socket.addEventListener('message', alertData)
+//
+// let button = document.querySelector('button')
+// button.addEventListener('click', function () {
+//     let data = JSON.stringify({data: 'Hello', room: localStorage.getItem('room')})
+//     socket.emit('message', data)
+// })
+//
+// function alertData(data) {
+//     console.log(data)
+// }

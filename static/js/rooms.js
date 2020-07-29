@@ -1,8 +1,6 @@
 import {data_handler} from "./data_handler.js";
 
 const socket = io.connect('http://127.0.0.1:5000/');
-socket.addEventListener('start_game', startNewGame);
-
 
 init();
 
@@ -10,6 +8,8 @@ function init() {
     saveUserDataToLocalStorage();
     addCreatingRoomFunctionality();
     addJoiningRoomFunctionality();
+    socket.addEventListener('save_map', saveMap);
+    socket.addEventListener('start_game', startNewGame);
 }
 
 function saveUserDataToLocalStorage() {
@@ -89,6 +89,9 @@ function joinRoom() {
     socket.emit('join', JSON.stringify(roomInfo));
 }
 
+function saveMap(map) {
+    localStorage.setItem('map', map);
+}
 
 function startNewGame(data) {
     localStorage.setItem('room', data)
