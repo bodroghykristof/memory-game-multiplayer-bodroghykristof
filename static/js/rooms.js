@@ -1,10 +1,22 @@
 import {data_handler} from "./data_handler.js";
 
+const socket = io.connect('http://127.0.0.1:5000/');
+
 
 init();
 
 function init() {
+    saveUserDataToLocalStorage();
     addCreatingRoomFunctionality();
+    addJoiningRoomFunctionality();
+}
+
+function saveUserDataToLocalStorage() {
+    const infoStorage = document.querySelector('.username-info');
+    const username = infoStorage.innerHTML;
+    localStorage.setItem('username', username);
+    const userId = infoStorage.dataset.userid;
+    localStorage.setItem('userid', userId);
 }
 
 function addCreatingRoomFunctionality() {
@@ -27,19 +39,22 @@ function deleteRoom() {
 }
 
 function displayNewRoom(data) {
+    const roomNumber = data.room_id;
+    socket.emit('create', roomNumber);
     changeButton();
     let waitingRoom = document.createElement('div');
     waitingRoom.classList.add('room');
-    waitingRoom.dataset.roomId = data.room_id;
+    waitingRoom.dataset.roomId = roomNumber;
     waitingRoom.innerHTML = `
-        <h4>Room number ${data.room_id}</h4>
+        <h4>Room number ${roomNumber}</h4>
         <p><b>Player one:</b> ${data.username}</p>
         <p>Waiting for another player to join...</p>
     `
     document.querySelector('.create-room').appendChild(waitingRoom);
 }
 
-function removeRoom() {
+function removeRoom(roomNumber) {
+    socket.emit('leave', roomNumber);
     document.querySelector('.create-room .room').remove();
     changeButton();
 }
@@ -55,4 +70,20 @@ function changeButton() {
         createButton.removeEventListener('click', deleteRoom);
         createButton.addEventListener('click', createNewRoom);
     }
+}
+
+
+
+
+function addJoiningRoomFunctionality() {
+    const joinButtons = [...document.querySelectorAll('.join-button')];
+    joinButtons.forEach(button => button.addEventListener('click', joinRoom))
+}
+
+function joinRoom() {
+    const roomNumber = this.closest('.room').dataset.roomId;
+    const username = localStorage.getItem('username');
+    const userid = localStorage.getItem('userid');
+    const roomInfo =  {username: username, roomNumber: roomNumber, userid: userid}
+    socket.emit('join', JSON.stringify(roomInfo));
 }

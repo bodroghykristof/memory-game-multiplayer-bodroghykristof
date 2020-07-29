@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, join_room, leave_room
 import business
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = b'n\x18\xd9Pi\x98NB\xa7`i\xf5\xfb#\xa1\x1e'
@@ -55,6 +56,29 @@ def delete_room():
     room_id = request.get_json()
     business.delete_room(room_id)
     return jsonify(room_id)
+
+
+@socketio.on('create')
+def create_new_room(room):
+    join_room(room)
+    # TODO: real-time update of new rooms
+
+
+@socketio.on('join')
+def join_open_room(room_info):
+    info_object = json.loads(room_info)
+    room_number = info_object['roomNumber']
+    username = info_object['username']
+    user_id = info_object['userid']
+    business.mark_room_as_closed(room_number, username, user_id)
+    join_room(room_number)
+    # TODO: real-time update of closing rooms
+
+
+@socketio.on('leave')
+def leave_current_room(room):
+    leave_room(room)
+    # TODO: real-time update of deleted rooms
 
 
 if __name__ == '__main__':
