@@ -10,6 +10,8 @@ socketio = SocketIO(app)
 @app.route('/', methods=['GET', 'POST'])
 def main_page():
     if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
         business.check_login_data()
     return render_template('login.html')
 
@@ -17,7 +19,13 @@ def main_page():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        business.register_user()
+        username = request.form.get('username')
+        password_one = request.form.get('password-one')
+        password_two = request.form.get('password-two')
+        if password_one == password_two and not business.username_is_already_used(username):
+            business.register_user(username, password_one)
+        else:
+            return render_template('register.html')
     return render_template('register.html')
 
 
