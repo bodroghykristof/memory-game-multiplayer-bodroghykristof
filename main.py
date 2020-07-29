@@ -72,7 +72,7 @@ def logout():
 
 @socketio.on('create')
 def create_new_room(room):
-    join_room(room)
+    join_room(str(room))
     # TODO: real-time update of new rooms
 
 
@@ -84,7 +84,7 @@ def join_open_room(room_info):
     user_id = info_object['userid']
     business.mark_room_as_closed(room_number, username, user_id)
     join_room(room_number)
-    emit('start_game', room=room_number)
+    emit('start_game', broadcast=True, room=room_number)
     # TODO: real-time update of closing rooms
 
 
