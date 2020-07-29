@@ -6,28 +6,3 @@ body {
 h1, h2 {
     text-align: center;
 }
-
-.user-form, .register-box {
-    text-align: center;
-    padding: 20px 5%;
-}
-
-.user-form input {
-    margin: 10px 0;
-    font-size: 120%;
-    border-radius: 5px;
-}
-
-.user-form label {
-    font-weight: bold;
-}
-
-.login-system-box {
-    margin-top: 75px;
-    background-color: lightgray;
-    border: black solid 2px;
-    border-radius: 12px;
-    width: 30%;
-    text-align: center;
-    margin-left: 35%;
-}

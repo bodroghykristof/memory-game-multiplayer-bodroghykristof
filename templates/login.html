@@ -4,22 +4,29 @@
     <meta charset="UTF-8">
     <title>Memory Game</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/usersystem.css') }}">
 </head>
 <body>
     <h1>Multiplayer Memory Game</h1>
-    <h2>Login to get started</h2>
+    {% block title %}
+        <h2>Login to get started</h2>
+    {% endblock %}
     <div class="login-system-box">
-        <form action="" class="user-form">
-            <label for="username">Username</label><br>
-            <input type="text" id="username"><br>
-            <label for="password">Password</label><br>
-            <input type="password" id="password"><br>
-            <input type="submit" value="Login">
+        <form action="#" class="user-form" method="post">
+            {% block userbox %}
+                <label for="username">Username</label><br>
+                <input type="text" id="username"><br>
+                <label for="password">Password</label><br>
+                <input type="password" id="password"><br>
+                <input type="submit" value="Login">
+            {% endblock %}
         </form>
-        <div class="register-box">
-            <p>Don't have an account?</p>
-            <a href=""><button>Register</button></a>
-        </div>
+        {% block register %}
+            <div class="register-box">
+                <p>Don't have an account?</p>
+                <a href="{{ url_for('register') }}"><button>Register</button></a>
+            </div>
+        {% endblock %}
     </div>
 </body>
 </html>
