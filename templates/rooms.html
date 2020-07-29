@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rooms.css') }}">
 </head>
 <body>
-    <p>Rooms</p>
+    <h1>Multiplayer Memory Game</h1>
+    <div class="boards">
+          <div class="room-board join-room"></div>
+        <div class="room-board spectate-room"></div>
+        <div class="room-board create-room"></div>
+    </div>
+
 </body>
 </html>

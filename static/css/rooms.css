@@ -1,0 +1,25 @@
+.room-board {
+    width: 25%;
+    height: 500px;
+    border: black solid 5px;
+    border-radius: 15px;
+    background-color: lightgray;
+}
+
+.join-room {
+    float: left;
+}
+
+.spectate-room {
+    float: right;
+}
+
+.create-room {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.boards {
+    text-align: center;
+    padding: 50px 20px;
+}
