@@ -36,5 +36,11 @@ def rooms():
     return render_template('rooms.html')
 
 
+@app.route('/add-room')
+def add_room():
+    business.create_new_room()
+    return 202
+
+
 if __name__ == '__main__':
     socketio.run(app)

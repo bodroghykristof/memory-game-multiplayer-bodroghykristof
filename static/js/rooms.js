@@ -10,5 +10,5 @@ function addCreatingRoomFunctionality() {
 }
 
 function createNewRoom() {
-    alert('Helllo')
+    fetch
 }

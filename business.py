@@ -45,3 +45,8 @@ def check_login_data(cursor, username, password):
     if user_record:
         valid_password = user_record['password']
         return verify_password(password, valid_password)
+
+
+@data_handler.connection_handler
+def create_new_room(cursor):
+    pass
