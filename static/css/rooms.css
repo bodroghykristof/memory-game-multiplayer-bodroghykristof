@@ -39,3 +39,7 @@ button {
     margin: 20px auto;
     padding: 10px;
 }
+
+.logout-section {
+    text-align: center;
+}
