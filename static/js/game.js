@@ -26,14 +26,19 @@ const classArray = [
 
 function init() {
     setupConnection();
+    initVariables();
     createMap();
-    createShowingFunctionality();
+    addShowingFunctionality();
 }
 
 function setupConnection() {
     const info = JSON.stringify({roomNumber: roomNumber})
     socket.emit('game-join', info);
     console.log(info)
+}
+
+function initVariables() {
+    localStorage.setItem('rounds', 0);
 }
 
 function createMap() {
@@ -43,7 +48,7 @@ function createMap() {
     let size = Math.sqrt(numbers.length);
     let tableContent = `<tr>`
     for (let cell = 0; cell < numbers.length; cell++) {
-        tableContent += `<td data-solvedclass="${classArray[numbers[cell] - 1]}"><i class="fa fa-question" aria-hidden="true"></i></td>`
+        tableContent += `<td data-solvedclass="${classArray[numbers[cell] - 1]}" id="cell-${cell}"><i class="fa fa-question" aria-hidden="true"></i></td>`
         if (cell % size === size - 1 && cell !== size**2 - 1) {
             tableContent += `</tr><tr>`
         }
@@ -53,15 +58,42 @@ function createMap() {
     gameField.appendChild(gameTable);
 }
 
-function createShowingFunctionality() {
+function addShowingFunctionality() {
     const cells = [...document.querySelectorAll('td')];
     cells.forEach(cell => cell.addEventListener('click', showIcon))
 }
 
+function removeShowingFunctionality() {
+    const cells = [...document.querySelectorAll('td')];
+    cells.forEach(cell => cell.removeEventListener('click', showIcon))
+}
+
 function showIcon() {
+    localStorage.setItem('rounds', (parseInt(localStorage.getItem('rounds')) + 1).toString())
+    localStorage.setItem(`guess-${parseInt(localStorage.getItem('rounds')) % 2}`, this.id.split('-')[1])
     const icon = this.querySelector('i');
     icon.classList.remove('fa-question');
     icon.classList.add(this.dataset.solvedclass);
+
+    if (parseInt(localStorage.getItem('rounds')) % 2 === 0) {
+        removeShowingFunctionality()
+        const guessOne = document.querySelector(`#cell-${localStorage.getItem('guess-0')}`)
+        const guessTwo = document.querySelector(`#cell-${localStorage.getItem('guess-1')}`)
+        if (guessOne.querySelector('i').classList[1] !== guessTwo.querySelector('i').classList[1]) {
+            setTimeout(function () {
+                hideIcon(guessOne);
+                hideIcon(guessTwo);
+            }, 2000);
+        }
+    }
 }
+
+
+function hideIcon(cell) {
+    const icon = cell.querySelector('i');
+    icon.classList.remove(cell.dataset.solvedclass);
+    icon.classList.add('fa-question');
+}
+
 
 init();
