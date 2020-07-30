@@ -1,15 +1,65 @@
 import {data_handler} from "./data_handler.js";
 
 const socket = io.connect('http://127.0.0.1:5000/');
-socket.emit('create', localStorage.getItem('room'))
-socket.addEventListener('message', alertData)
+const roomNumber = localStorage.getItem('room');
 
-let button = document.querySelector('button')
-button.addEventListener('click', function () {
-    let data = JSON.stringify({data: 'Hello', room: localStorage.getItem('room')})
-    socket.emit('message', data)
-})
+const classArray = [
+    'fa-star',
+    'fa-shower',
+    'fa-university',
+    'fa-car',
+    'fa-anchor',
+    'fa-bell',
+    'fa-bicycle',
+    'fa-bullseye',
+    'fa-bug',
+    'fa-coffee',
+    'fa-bolt',
+    'fa-cube',
+    'fa-diamond',
+    'fa-envelope',
+    'fa-eye',
+    'fa-rss',
+    'fa-gift',
+    'fa-hashtag'
+]
 
-function alertData(data) {
-    console.log(data)
+function init() {
+    setupConnection();
+    createMap();
+    createShowingFunctionality();
 }
+
+function setupConnection() {
+    socket.emit('create', roomNumber);
+}
+
+function createMap() {
+    let numbers = JSON.parse(localStorage.getItem('map'));
+    const gameField = document.querySelector('.game-field');
+    let gameTable = document.createElement('table');
+    let size = Math.sqrt(numbers.length);
+    let tableContent = `<tr>`
+    for (let cell = 0; cell < numbers.length; cell++) {
+        tableContent += `<td data-solvedclass="${classArray[numbers[cell] - 1]}"><i class="fa fa-question" aria-hidden="true"></i></td>`
+        if (cell % size === size - 1 && cell !== size**2 - 1) {
+            tableContent += `</tr><tr>`
+        }
+    }
+    tableContent += `</tr>`
+    gameTable.innerHTML = tableContent;
+    gameField.appendChild(gameTable);
+}
+
+function createShowingFunctionality() {
+    const cells = [...document.querySelectorAll('td')];
+    cells.forEach(cell => cell.addEventListener('click', showIcon))
+}
+
+function showIcon() {
+    const icon = this.querySelector('i');
+    icon.classList.remove('fa-question');
+    icon.classList.add(this.dataset.solvedclass);
+}
+
+init();

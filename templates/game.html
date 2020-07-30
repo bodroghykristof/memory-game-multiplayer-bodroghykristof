@@ -5,11 +5,15 @@
     <title>Multiplayer Memory Game</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/game.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
 </head>
 <body>
-    <input type="text">
-    <button>Send</button>
-    <div class="result"></div>
+    <div class="chat-box">
+        <div class="message-board"></div>
+        <input type="text"><br>
+        <button>Send</button>
+    </div>
+    <div class="game-field"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" type="text/javascript" defer></script>
     <script src="{{ url_for('static', filename='js/game.js') }}" type="module" defer></script>
 </body>

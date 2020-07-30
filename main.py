@@ -85,6 +85,8 @@ def join_open_room(room_info):
     user_id = info_object['userid']
     business.mark_room_as_closed(room_number, username, user_id)
     join_room(room_number)
+    generated_map = json.dumps(business.generate_map(6))
+    emit('save_map', generated_map, room=room_number)
     emit('start_game', room_number, room=room_number)
     # TODO: real-time update of closing rooms
 
@@ -95,11 +97,10 @@ def leave_current_room(room):
     # TODO: real-time update of deleted rooms
 
 
-@socketio.on('message')
-def get_message(data):
-    room = json.loads(data)['room']
-    emit('message', 'hello', room=room)
-    # TODO: real-time update of deleted rooms
+@socketio.on('ready')
+def get_message(room_number):
+    generated_map = business.generate_map(10)
+    emit('map-created', generated_map, room=room_number)
 
 
 if __name__ == '__main__':

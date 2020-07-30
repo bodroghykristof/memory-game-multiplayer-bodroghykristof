@@ -1,5 +1,6 @@
 import data_handler
 import bcrypt
+import random
 
 
 def hash_password(password):
@@ -98,3 +99,9 @@ def mark_room_as_closed(cursor, room_number, username, user_id):
             WHERE id = %(room_number)s
             '''
     cursor.execute(query, {'username': username, 'user_id': user_id, 'room_number': room_number})
+
+
+def generate_map(length):
+    numbers = [number for number in range(1, int(length**2/2) + 1)] * 2
+    random.shuffle(numbers)
+    return numbers
