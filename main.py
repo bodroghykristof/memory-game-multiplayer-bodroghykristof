@@ -62,8 +62,6 @@ def register():
 def rooms():
     open_rooms = business.get_open_rooms()
     own_rooms = business.get_own_rooms(open_rooms, session['user_id'])
-    print(open_rooms)
-    print(own_rooms)
     return render_template('rooms.html', rooms=open_rooms, own_rooms=own_rooms)
 
 
@@ -104,6 +102,13 @@ def create_new_room(room_info):
     room_number = info_object['roomNumber']
     join_room(room_number)
     emit('room-creation', room_info, broadcast=True)
+
+
+@socketio.on('game-join')
+def create_new_room(room_info):
+    info_object = json.loads(room_info)
+    room_number = info_object['roomNumber']
+    join_room(room_number)
 
 
 @socketio.on('join')

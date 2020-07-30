@@ -91,7 +91,7 @@ def get_open_rooms(cursor):
 
 def get_own_rooms(rooms, id):
     for room in rooms:
-        if room['user_id_one'] == id:
+        if room['user_id_one'] == id and not room['user_id_two']:
             return True
     return False
 

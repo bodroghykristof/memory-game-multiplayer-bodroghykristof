@@ -39,7 +39,7 @@
         </div>
         <div class="room-board create-room">
             <h3>Create Room</h3>
-            {% if rooms.own_rooms == False %}
+            {% if own_rooms == True %}
                 <button id="create-button" data-username="{{ session.username }}"
                 data-userid="{{ session.user_id }}">Delete Room</button>
             {% else %}
