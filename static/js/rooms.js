@@ -8,6 +8,7 @@ function init() {
     saveUserDataToLocalStorage();
     addCreatingRoomFunctionality();
     addJoiningRoomFunctionality();
+    socket.addEventListener('room-creation', displayOtherPlayersNewRoom);
     socket.addEventListener('save_map', saveMap);
     socket.addEventListener('start_game', startNewGame);
 }
@@ -42,18 +43,27 @@ function deleteRoom() {
 function displayNewRoom(data) {
     const roomNumber = data.room_id;
     const username = localStorage.getItem('username');
-    const roomInfo =  JSON.stringify({username: username, roomNumber: roomNumber.toString()})
+    const userid = localStorage.getItem('userid');
+    const roomInfo =  JSON.stringify({username: username, roomNumber: roomNumber.toString(), userid: userid})
     socket.emit('create', roomInfo);
     changeButton();
+    createNewRoomElement(roomNumber, data.username, '.create-room');
+}
+
+function createNewRoomElement(roomNumber, username, selector) {
     let waitingRoom = document.createElement('div');
     waitingRoom.classList.add('room');
     waitingRoom.dataset.roomId = roomNumber;
     waitingRoom.innerHTML = `
         <h4>Room number ${roomNumber}</h4>
-        <p><b>Player one:</b> ${data.username}</p>
+        <p><b>Player one:</b> ${username}</p>
         <p>Waiting for another player to join...</p>
     `
-    document.querySelector('.create-room').appendChild(waitingRoom);
+    if (selector === '.join-room') {
+        waitingRoom.innerHTML += `<button class="join-button">Join</button>`
+        waitingRoom.querySelector('button').addEventListener('click', joinRoom);
+    }
+    document.querySelector(selector).appendChild(waitingRoom);
 }
 
 function removeRoom(roomNumber) {
@@ -89,6 +99,15 @@ function joinRoom() {
     const userid = localStorage.getItem('userid');
     const roomInfo =  {username: username, roomNumber: roomNumber.toString(), userid: userid}
     socket.emit('join', JSON.stringify(roomInfo));
+}
+
+function displayOtherPlayersNewRoom(data) {
+    const infoObject = JSON.parse(data)
+    const roomNumber = infoObject.roomNumber;
+    const username = infoObject.username;
+    if (infoObject.userid !== localStorage.getItem('userid')) {
+        createNewRoomElement(roomNumber, username, '.join-room');
+    }
 }
 
 function saveMap(map) {

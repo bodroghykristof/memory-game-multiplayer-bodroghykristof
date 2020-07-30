@@ -100,7 +100,7 @@ def create_new_room(room_info):
     print(info_object)
     room_number = info_object['roomNumber']
     join_room(room_number)
-    # emit('room-creation', broadcast=True)
+    emit('room-creation', room_info, broadcast=True)
 
 
 @socketio.on('join')
