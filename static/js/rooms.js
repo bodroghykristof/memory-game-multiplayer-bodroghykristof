@@ -13,6 +13,7 @@ function init() {
     socket.addEventListener('remove-room', removeOtherPlayersRoom);
     socket.addEventListener('save_map', saveMap);
     socket.addEventListener('start_game', startNewGame);
+    socket.addEventListener('close_room', closeRoomWhenGameStarts);
 }
 
 function saveUserDataToLocalStorage() {
@@ -75,7 +76,7 @@ function createNewRoomElement(roomNumber, username, selector) {
     waitingRoom.innerHTML = `
         <h4>Room number ${roomNumber}</h4>
         <p><b>Player one:</b> ${username}</p>
-        <p>Waiting for another player to join...</p>
+        <p class="wait-paragraph">Waiting for another player to join...</p>
     `
     if (selector === '.join-room') {
         waitingRoom.innerHTML += `<button class="join-button">Join</button>`
@@ -144,4 +145,21 @@ function saveMap(map) {
 function startNewGame(data) {
     localStorage.setItem('room', data)
     window.location.replace('/game');
+}
+
+function closeRoomWhenGameStarts(data) {
+    console.log(data)
+    const information = JSON.parse(data);
+    const roomNumber = information.roomNumber;
+    const username = information.usernameTwo;
+    console.log(roomNumber)
+    console.log(username)
+    const openRooms = document.querySelectorAll('.join-room .room');
+    for (let room of openRooms) {
+        if (room.dataset.roomId === roomNumber) {
+            document.querySelector('.spectate-room').appendChild(room);
+            room.querySelector('.wait-paragraph').innerHTML = `<b>Player two: </b>${username}`;
+            room.querySelector('button').innerHTML = `Spectate`;
+        }
+    }
 }

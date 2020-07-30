@@ -132,6 +132,8 @@ def join_open_room(room_info):
     generated_map = json.dumps(business.generate_map(6))
     emit('save_map', generated_map, room=room_number)
     emit('start_game', room_number, room=room_number)
+    close_room_data = json.dumps({'roomNumber': room_number, 'usernameTwo': username})
+    emit('close_room', close_room_data, broadcast=True)
     # TODO: real-time update of closing rooms
 
 

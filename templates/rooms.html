@@ -18,7 +18,7 @@
                     <div class="room" data-room-id="{{ room.id }}">
                         <h4>Room number {{ room.id }}</h4>
                         <p><b>Player one:</b> {{ room.username_one }}</p>
-                        <p>Waiting for another player to join...</p>
+                        <p class="wait-paragraph">Waiting for another player to join...</p>
                         <button class="join-button">Join</button>
                     </div>
                 {% endif %}
@@ -31,7 +31,7 @@
                     <div class="room" data-room-id="{{ room.id }}">
                         <h4>Room number {{ room.id }}</h4>
                         <p><b>Player one:</b> {{ room.username_one }}</p>
-                        <p><b>Player two:</b> {{ room.username_two }}</p>
+                        <p class="wait-paragraph"><b>Player two:</b> {{ room.username_two }}</p>
                         <button>Spectate</button>
                     </div>
                 {% endif %}
