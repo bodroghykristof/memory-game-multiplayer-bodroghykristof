@@ -61,7 +61,10 @@ def register():
 @authenticated_only
 def rooms():
     open_rooms = business.get_open_rooms()
-    return render_template('rooms.html', rooms=open_rooms)
+    own_rooms = business.get_own_rooms(open_rooms, session['user_id'])
+    print(open_rooms)
+    print(own_rooms)
+    return render_template('rooms.html', rooms=open_rooms, own_rooms=own_rooms)
 
 
 @app.route('/add-room', methods=['POST'])

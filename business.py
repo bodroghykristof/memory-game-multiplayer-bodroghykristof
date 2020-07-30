@@ -89,6 +89,13 @@ def get_open_rooms(cursor):
     return cursor.fetchall()
 
 
+def get_own_rooms(rooms, id):
+    for room in rooms:
+        if room['user_id_one'] == id:
+            return True
+    return False
+
+
 @data_handler.connection_handler
 def mark_room_as_closed(cursor, room_number, username, user_id):
     query = '''

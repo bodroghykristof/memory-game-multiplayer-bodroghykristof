@@ -23,7 +23,12 @@ function saveUserDataToLocalStorage() {
 
 function addCreatingRoomFunctionality() {
     const createButton = document.querySelector('#create-button');
-    createButton.addEventListener('click', createNewRoom)
+    switch (createButton.innerHTML) {
+        case 'Create New Room':
+            createButton.addEventListener('click', createNewRoom)
+        default:
+            createButton.addEventListener('click', deleteRoom)
+    }
 }
 
 function createNewRoom() {
