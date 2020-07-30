@@ -108,6 +108,17 @@ def get_current_room(cursor, user_id):
 
 
 @data_handler.connection_handler
+def get_starter_by_room(cursor, room_id):
+    query = '''
+        SELECT user_id_one
+        FROM rooms
+        WHERE id = %(room_id)s
+                '''
+    cursor.execute(query, {'room_id': room_id})
+    return cursor.fetchone()['user_id_one']
+
+
+@data_handler.connection_handler
 def mark_room_as_closed(cursor, room_number, username, user_id):
     query = '''
             UPDATE rooms

@@ -26,14 +26,20 @@ const classArray = [
 
 function init() {
     setupConnection();
+    initVariables();
     createMap();
-    createShowingFunctionality();
+    findOutStarterPlayer();
+    socket.addEventListener('first-guess', showOthersFirstIcon)
+    socket.addEventListener('second-guess', endOthersRound)
 }
 
 function setupConnection() {
     const info = JSON.stringify({roomNumber: roomNumber})
     socket.emit('game-join', info);
-    console.log(info)
+}
+
+function initVariables() {
+    localStorage.setItem('rounds', '0');
 }
 
 function createMap() {
@@ -43,7 +49,7 @@ function createMap() {
     let size = Math.sqrt(numbers.length);
     let tableContent = `<tr>`
     for (let cell = 0; cell < numbers.length; cell++) {
-        tableContent += `<td data-solvedclass="${classArray[numbers[cell] - 1]}"><i class="fa fa-question" aria-hidden="true"></i></td>`
+        tableContent += `<td data-solvedclass="${classArray[numbers[cell] - 1]}" id="cell-${cell}" class="active"><i class="fa fa-question" aria-hidden="true"></i></td>`
         if (cell % size === size - 1 && cell !== size**2 - 1) {
             tableContent += `</tr><tr>`
         }
@@ -53,15 +59,91 @@ function createMap() {
     gameField.appendChild(gameTable);
 }
 
-function createShowingFunctionality() {
-    const cells = [...document.querySelectorAll('td')];
+function findOutStarterPlayer() {
+    const roomNumber = localStorage.getItem('room')
+    data_handler._api_get(`starter/${roomNumber}`, startGame)
+}
+
+function startGame(data) {
+    if (data.toString() === localStorage.getItem('userid')) {
+        localStorage.setItem('starter', 'yes');
+        addShowingFunctionality()
+    } else {
+        localStorage.setItem('starter', 'no');
+    }
+}
+
+function addShowingFunctionality() {
+    const cells = [...document.querySelectorAll('.active')];
     cells.forEach(cell => cell.addEventListener('click', showIcon))
 }
 
+function removeShowingFunctionality() {
+    const cells = [...document.querySelectorAll('.active')];
+    cells.forEach(cell => cell.removeEventListener('click', showIcon))
+}
+
 function showIcon() {
+    localStorage.setItem('rounds', (parseInt(localStorage.getItem('rounds')) + 1).toString())
+    localStorage.setItem(`guess-${parseInt(localStorage.getItem('rounds')) % 2}`, this.id.split('-')[1])
     const icon = this.querySelector('i');
     icon.classList.remove('fa-question');
     icon.classList.add(this.dataset.solvedclass);
+    let dataToServer = JSON.stringify({roomNumber: localStorage.getItem('room').toString(), cellNumber: this.id.split('-')[1].toString()})
+
+    if (parseInt(localStorage.getItem('rounds')) % 2 === 0) {
+        socket.emit('second-guess', dataToServer)
+        removeShowingFunctionality()
+        const guessOne = document.querySelector(`#cell-${localStorage.getItem('guess-0')}`)
+        const guessTwo = document.querySelector(`#cell-${localStorage.getItem('guess-1')}`)
+        setTimeout(function () {
+            if (guessOne.querySelector('i').classList[1] !== guessTwo.querySelector('i').classList[1]) {
+                hideIcon(guessOne);
+                hideIcon(guessTwo);
+            } else {
+                guessOne.classList.remove('active')
+                guessTwo.classList.remove('active')
+                guessOne.classList.add('inactive')
+                guessTwo.classList.add('inactive')
+            }
+        }, 2000)
+    } else {
+        socket.emit('first-guess', dataToServer)
+    }
 }
+
+function showOthersFirstIcon(data) {
+    const icon = document.querySelector(`#cell-${data} i`);
+    icon.classList.remove('fa-question');
+    icon.classList.add(icon.closest('td').dataset.solvedclass);
+    localStorage.setItem('opponent-guess', data);
+}
+
+function endOthersRound(data) {
+    const guessOne = document.querySelector(`#cell-${localStorage.getItem('opponent-guess')} i`);
+    const guessTwo = document.querySelector(`#cell-${data} i`);
+    guessTwo.classList.remove('fa-question');
+    guessTwo.classList.add(guessTwo.closest('td').dataset.solvedclass);
+    setTimeout(function () {
+        if (guessOne.classList[1] !== guessTwo.classList[1]) {
+            hideIcon(guessOne.closest('td'));
+            hideIcon(guessTwo.closest('td'))
+        } else {
+            guessOne.closest('td').classList.remove('active')
+            guessTwo.closest('td').classList.remove('active')
+            guessOne.closest('td').classList.add('inactive')
+            guessTwo.closest('td').classList.add('inactive')
+        }
+        addShowingFunctionality();
+    }, 2000);
+}
+
+
+function hideIcon(cell) {
+    const icon = cell.querySelector('i');
+    icon.classList.remove(cell.dataset.solvedclass);
+    icon.classList.add('fa-question');
+}
+
 
 init();

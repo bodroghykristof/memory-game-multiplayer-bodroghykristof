@@ -29,3 +29,7 @@
     border: solid black 2px;
     margin: 10px 0;
 }
+
+.inactive {
+    visibility: hidden;
+}

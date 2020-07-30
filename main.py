@@ -84,10 +84,16 @@ def delete_room():
 @app.route('/current-room/<id>')
 def get_current_room(id):
     current_room_entry = business.get_current_room(id)
-    print(current_room_entry)
     if current_room_entry:
         return jsonify(current_room_entry['id'])
     return 'No room'
+
+
+@app.route('/starter/<room_id>')
+def get_starter_player(room_id):
+    starter_player_id = business.get_starter_by_room(room_id)
+    print(starter_player_id)
+    return jsonify(starter_player_id)
 
 
 @app.route('/game')
@@ -148,6 +154,22 @@ def leave_current_room(room):
 def get_message(room_number):
     generated_map = business.generate_map(10)
     emit('map-created', generated_map, room=room_number)
+
+
+@socketio.on('first-guess')
+def first_guess(data):
+    received_data = json.loads(data);
+    room_number = received_data['roomNumber']
+    cell_number = received_data['cellNumber']
+    emit('first-guess', cell_number, room=room_number, include_self=False)
+
+
+@socketio.on('second-guess')
+def second_guess(data):
+    received_data = json.loads(data);
+    room_number = received_data['roomNumber']
+    cell_number = received_data['cellNumber']
+    emit('second-guess', cell_number, room=room_number, include_self=False)
 
 
 if __name__ == '__main__':
