@@ -41,7 +41,9 @@ function deleteRoom() {
 
 function displayNewRoom(data) {
     const roomNumber = data.room_id;
-    socket.emit('create', roomNumber);
+    const username = localStorage.getItem('username');
+    const roomInfo =  JSON.stringify({username: username, roomNumber: roomNumber.toString()})
+    socket.emit('create', roomInfo);
     changeButton();
     let waitingRoom = document.createElement('div');
     waitingRoom.classList.add('room');
@@ -85,7 +87,7 @@ function joinRoom() {
     const roomNumber = this.closest('.room').dataset.roomId;
     const username = localStorage.getItem('username');
     const userid = localStorage.getItem('userid');
-    const roomInfo =  {username: username, roomNumber: roomNumber, userid: userid}
+    const roomInfo =  {username: username, roomNumber: roomNumber.toString(), userid: userid}
     socket.emit('join', JSON.stringify(roomInfo));
 }
 

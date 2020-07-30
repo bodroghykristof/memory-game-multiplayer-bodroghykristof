@@ -95,10 +95,12 @@ def logout():
 
 
 @socketio.on('create')
-def create_new_room(room):
-    join_room(str(room))
-    print(str(room))
-    # TODO: real-time update of new rooms
+def create_new_room(room_info):
+    info_object = json.loads(room_info)
+    print(info_object)
+    room_number = info_object['roomNumber']
+    join_room(room_number)
+    # emit('room-creation', broadcast=True)
 
 
 @socketio.on('join')

@@ -31,7 +31,8 @@ function init() {
 }
 
 function setupConnection() {
-    socket.emit('create', roomNumber);
+    const info = JSON.stringify({roomNumber: roomNumber})
+    socket.emit('create', info);
 }
 
 function createMap() {
