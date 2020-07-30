@@ -156,5 +156,21 @@ def get_message(room_number):
     emit('map-created', generated_map, room=room_number)
 
 
+@socketio.on('first-guess')
+def first_guess(data):
+    received_data = json.loads(data);
+    room_number = received_data['roomNumber']
+    cell_number = received_data['cellNumber']
+    emit('first-guess', cell_number, room=room_number, include_self=False)
+
+
+@socketio.on('second-guess')
+def second_guess(data):
+    received_data = json.loads(data);
+    room_number = received_data['roomNumber']
+    cell_number = received_data['cellNumber']
+    emit('second-guess', cell_number, room=room_number, include_self=False)
+
+
 if __name__ == '__main__':
     socketio.run(app)
