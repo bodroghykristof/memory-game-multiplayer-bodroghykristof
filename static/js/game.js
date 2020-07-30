@@ -28,17 +28,16 @@ function init() {
     setupConnection();
     initVariables();
     createMap();
-    addShowingFunctionality();
+    findOutStarterPlayer();
 }
 
 function setupConnection() {
     const info = JSON.stringify({roomNumber: roomNumber})
     socket.emit('game-join', info);
-    console.log(info)
 }
 
 function initVariables() {
-    localStorage.setItem('rounds', 0);
+    localStorage.setItem('rounds', '0');
 }
 
 function createMap() {
@@ -58,9 +57,18 @@ function createMap() {
     gameField.appendChild(gameTable);
 }
 
-function addShowingFunctionality() {
-    const cells = [...document.querySelectorAll('td')];
-    cells.forEach(cell => cell.addEventListener('click', showIcon))
+function findOutStarterPlayer() {
+    const roomNumber = localStorage.getItem('room')
+    data_handler._api_get(`starter/${roomNumber}`, addShowingFunctionality)
+}
+
+function addShowingFunctionality(data) {
+    console.log(data)
+    console.log(localStorage.getItem('userid'))
+    if (data.toString() === localStorage.getItem('userid')) {
+        const cells = [...document.querySelectorAll('td')];
+        cells.forEach(cell => cell.addEventListener('click', showIcon))
+    }
 }
 
 function removeShowingFunctionality() {

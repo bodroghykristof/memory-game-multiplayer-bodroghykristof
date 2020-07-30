@@ -84,10 +84,16 @@ def delete_room():
 @app.route('/current-room/<id>')
 def get_current_room(id):
     current_room_entry = business.get_current_room(id)
-    print(current_room_entry)
     if current_room_entry:
         return jsonify(current_room_entry['id'])
     return 'No room'
+
+
+@app.route('/starter/<room_id>')
+def get_starter_player(room_id):
+    starter_player_id = business.get_starter_by_room(room_id)
+    print(starter_player_id)
+    return jsonify(starter_player_id)
 
 
 @app.route('/game')
