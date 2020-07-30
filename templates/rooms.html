@@ -14,11 +14,11 @@
         <div class="room-board join-room">
             <h3>Join Room</h3>
             {% for room in rooms %}
-                {% if not room.username_two %}
+                {% if not room.username_two and not room.user_id_one == session.user_id %}
                     <div class="room" data-room-id="{{ room.id }}">
                         <h4>Room number {{ room.id }}</h4>
                         <p><b>Player one:</b> {{ room.username_one }}</p>
-                        <p>Waiting for another player to join...</p>
+                        <p class="wait-paragraph">Waiting for another player to join...</p>
                         <button class="join-button">Join</button>
                     </div>
                 {% endif %}
@@ -31,7 +31,7 @@
                     <div class="room" data-room-id="{{ room.id }}">
                         <h4>Room number {{ room.id }}</h4>
                         <p><b>Player one:</b> {{ room.username_one }}</p>
-                        <p><b>Player two:</b> {{ room.username_two }}</p>
+                        <p class="wait-paragraph"><b>Player two:</b> {{ room.username_two }}</p>
                         <button>Spectate</button>
                     </div>
                 {% endif %}
@@ -39,8 +39,22 @@
         </div>
         <div class="room-board create-room">
             <h3>Create Room</h3>
-            <button id="create-button" data-username="{{ session.username }}"
-                    data-userid="{{ session.user_id }}">Create New Room</button>
+            {% if own_rooms == True %}
+                <button id="create-button" data-username="{{ session.username }}"
+                data-userid="{{ session.user_id }}">Delete Room</button>
+            {% else %}
+                <button id="create-button" data-username="{{ session.username }}"
+                data-userid="{{ session.user_id }}">Create New Room</button>
+            {% endif %}
+            {% for room in rooms %}
+                {% if not room.username_two and room.user_id_one == session.user_id %}
+                    <div class="room" data-room-id="{{ room.id }}">
+                        <h4>Room number {{ room.id }}</h4>
+                        <p><b>Player one:</b> {{ room.username_one }}</p>
+                        <p>Waiting for another player to join...</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" type="text/javascript" defer></script>

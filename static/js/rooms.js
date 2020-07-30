@@ -6,10 +6,14 @@ init();
 
 function init() {
     saveUserDataToLocalStorage();
+    getCurrentRoomIfExists();
     addCreatingRoomFunctionality();
     addJoiningRoomFunctionality();
+    socket.addEventListener('room-creation', displayOtherPlayersNewRoom);
+    socket.addEventListener('remove-room', removeOtherPlayersRoom);
     socket.addEventListener('save_map', saveMap);
     socket.addEventListener('start_game', startNewGame);
+    socket.addEventListener('close_room', closeRoomWhenGameStarts);
 }
 
 function saveUserDataToLocalStorage() {
@@ -20,9 +24,25 @@ function saveUserDataToLocalStorage() {
     localStorage.setItem('userid', userId);
 }
 
+function getCurrentRoomIfExists() {
+    const userId = localStorage.getItem('userid')
+    data_handler._api_get(`/current-room/${userId}`, joinToCurrentRoom)
+}
+
+function joinToCurrentRoom(data) {
+    if (data !== 'No room') {
+        socket.emit('game-join', JSON.stringify({roomNumber: data.toString()}))
+    }
+}
+
 function addCreatingRoomFunctionality() {
     const createButton = document.querySelector('#create-button');
-    createButton.addEventListener('click', createNewRoom)
+    switch (createButton.innerHTML) {
+        case 'Create New Room':
+            createButton.addEventListener('click', createNewRoom)
+        default:
+            createButton.addEventListener('click', deleteRoom)
+    }
 }
 
 function createNewRoom() {
@@ -41,17 +61,28 @@ function deleteRoom() {
 
 function displayNewRoom(data) {
     const roomNumber = data.room_id;
-    socket.emit('create', roomNumber);
+    const username = localStorage.getItem('username');
+    const userid = localStorage.getItem('userid');
+    const roomInfo =  JSON.stringify({username: username, roomNumber: roomNumber.toString(), userid: userid})
+    socket.emit('create', roomInfo);
     changeButton();
+    createNewRoomElement(roomNumber, data.username, '.create-room');
+}
+
+function createNewRoomElement(roomNumber, username, selector) {
     let waitingRoom = document.createElement('div');
     waitingRoom.classList.add('room');
     waitingRoom.dataset.roomId = roomNumber;
     waitingRoom.innerHTML = `
         <h4>Room number ${roomNumber}</h4>
-        <p><b>Player one:</b> ${data.username}</p>
-        <p>Waiting for another player to join...</p>
+        <p><b>Player one:</b> ${username}</p>
+        <p class="wait-paragraph">Waiting for another player to join...</p>
     `
-    document.querySelector('.create-room').appendChild(waitingRoom);
+    if (selector === '.join-room') {
+        waitingRoom.innerHTML += `<button class="join-button">Join</button>`
+        waitingRoom.querySelector('button').addEventListener('click', joinRoom);
+    }
+    document.querySelector(selector).appendChild(waitingRoom);
 }
 
 function removeRoom(roomNumber) {
@@ -85,8 +116,26 @@ function joinRoom() {
     const roomNumber = this.closest('.room').dataset.roomId;
     const username = localStorage.getItem('username');
     const userid = localStorage.getItem('userid');
-    const roomInfo =  {username: username, roomNumber: roomNumber, userid: userid}
+    const roomInfo =  {username: username, roomNumber: roomNumber.toString(), userid: userid}
     socket.emit('join', JSON.stringify(roomInfo));
+}
+
+function displayOtherPlayersNewRoom(data) {
+    const infoObject = JSON.parse(data)
+    const roomNumber = infoObject.roomNumber;
+    const username = infoObject.username;
+    if (infoObject.userid !== localStorage.getItem('userid')) {
+        createNewRoomElement(roomNumber, username, '.join-room');
+    }
+}
+
+function removeOtherPlayersRoom(roomNumber) {
+    const rooms = document.querySelectorAll('.room');
+    for (let room of rooms) {
+        if (room.dataset.roomId === roomNumber) {
+            room.remove();
+        }
+    }
 }
 
 function saveMap(map) {
@@ -96,4 +145,21 @@ function saveMap(map) {
 function startNewGame(data) {
     localStorage.setItem('room', data)
     window.location.replace('/game');
+}
+
+function closeRoomWhenGameStarts(data) {
+    console.log(data)
+    const information = JSON.parse(data);
+    const roomNumber = information.roomNumber;
+    const username = information.usernameTwo;
+    console.log(roomNumber)
+    console.log(username)
+    const openRooms = document.querySelectorAll('.join-room .room');
+    for (let room of openRooms) {
+        if (room.dataset.roomId === roomNumber) {
+            document.querySelector('.spectate-room').appendChild(room);
+            room.querySelector('.wait-paragraph').innerHTML = `<b>Player two: </b>${username}`;
+            room.querySelector('button').innerHTML = `Spectate`;
+        }
+    }
 }
