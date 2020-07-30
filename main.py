@@ -8,6 +8,15 @@ app.config['SECRET_KEY'] = b'n\x18\xd9Pi\x98NB\xa7`i\xf5\xfb#\xa1\x1e'
 socketio = SocketIO(app)
 
 
+def authenticated_only(func):
+    def wrapper(*args, **kwargs):
+        if 'username' not in session:
+            return redirect(url_for('main_page'))
+        else:
+            return func(*args, **kwargs)
+    return wrapper
+
+
 @app.route('/', methods=['GET', 'POST'])
 def main_page():
     if request.method == 'POST':
@@ -17,8 +26,7 @@ def main_page():
         if user_record:
             session['username'] = user_record['username']
             session['user_id'] = user_record['id']
-            print(session)
-            return redirect(url_for('rooms'))
+            return redirect('/rooms')
     return render_template('login.html')
 
 
@@ -37,6 +45,7 @@ def register():
 
 
 @app.route('/rooms')
+@authenticated_only
 def rooms():
     open_rooms = business.get_open_rooms()
     return render_template('rooms.html', rooms=open_rooms)
