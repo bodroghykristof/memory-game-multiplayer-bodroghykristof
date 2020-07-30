@@ -42,7 +42,7 @@ function createMap() {
     let tableContent = `<tr>`
     for (let cell = 0; cell < numbers.length; cell++) {
         tableContent += `<td data-solvedclass="${classArray[numbers[cell] - 1]}"><i class="fa fa-question" aria-hidden="true"></i></td>`
-        if (cell % size === size - 1 && cell !== 99) {
+        if (cell % size === size - 1 && cell !== size**2 - 1) {
             tableContent += `</tr><tr>`
         }
     }
