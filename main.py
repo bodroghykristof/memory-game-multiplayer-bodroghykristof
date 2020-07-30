@@ -8,7 +8,28 @@ app.config['SECRET_KEY'] = b'n\x18\xd9Pi\x98NB\xa7`i\xf5\xfb#\xa1\x1e'
 socketio = SocketIO(app)
 
 
+def authenticated_only(func):
+    def wrapper(*args, **kwargs):
+        if 'username' not in session:
+            return redirect(url_for('main_page'))
+        else:
+            return func(*args, **kwargs)
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
+def not_authenticated_only(func):
+    def wrapper(*args, **kwargs):
+        if 'username' in session:
+            return redirect(url_for('rooms'))
+        else:
+            return func(*args, **kwargs)
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
 @app.route('/', methods=['GET', 'POST'])
+@not_authenticated_only
 def main_page():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -17,12 +38,12 @@ def main_page():
         if user_record:
             session['username'] = user_record['username']
             session['user_id'] = user_record['id']
-            print(session)
             return redirect(url_for('rooms'))
     return render_template('login.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@not_authenticated_only
 def register():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -37,6 +58,7 @@ def register():
 
 
 @app.route('/rooms')
+@authenticated_only
 def rooms():
     open_rooms = business.get_open_rooms()
     return render_template('rooms.html', rooms=open_rooms)
@@ -59,11 +81,13 @@ def delete_room():
 
 
 @app.route('/game')
+@authenticated_only
 def game():
     return render_template('game.html')
 
 
 @app.route('/logout')
+@authenticated_only
 def logout():
     session.pop('username', None)
     session.pop('user_id', None)

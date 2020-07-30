@@ -105,3 +105,4 @@ def generate_map(length):
     numbers = [number for number in range(1, int(length**2/2) + 1)] * 2
     random.shuffle(numbers)
     return numbers
+
