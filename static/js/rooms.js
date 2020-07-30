@@ -10,6 +10,7 @@ function init() {
     addCreatingRoomFunctionality();
     addJoiningRoomFunctionality();
     socket.addEventListener('room-creation', displayOtherPlayersNewRoom);
+    socket.addEventListener('remove-room', removeOtherPlayersRoom);
     socket.addEventListener('save_map', saveMap);
     socket.addEventListener('start_game', startNewGame);
 }
@@ -124,6 +125,15 @@ function displayOtherPlayersNewRoom(data) {
     const username = infoObject.username;
     if (infoObject.userid !== localStorage.getItem('userid')) {
         createNewRoomElement(roomNumber, username, '.join-room');
+    }
+}
+
+function removeOtherPlayersRoom(roomNumber) {
+    const rooms = document.querySelectorAll('.room');
+    for (let room of rooms) {
+        if (room.dataset.roomId === roomNumber) {
+            room.remove();
+        }
     }
 }
 

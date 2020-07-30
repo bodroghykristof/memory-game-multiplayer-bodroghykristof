@@ -138,7 +138,7 @@ def join_open_room(room_info):
 @socketio.on('leave')
 def leave_current_room(room):
     leave_room(room)
-    session.pop('room', None)
+    emit('remove-room', room, broadcast=True)
     # TODO: real-time update of deleted rooms
 
 
