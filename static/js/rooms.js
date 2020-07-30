@@ -6,6 +6,7 @@ init();
 
 function init() {
     saveUserDataToLocalStorage();
+    getCurrentRoomIfExists();
     addCreatingRoomFunctionality();
     addJoiningRoomFunctionality();
     socket.addEventListener('room-creation', displayOtherPlayersNewRoom);
@@ -19,6 +20,17 @@ function saveUserDataToLocalStorage() {
     localStorage.setItem('username', username);
     const userId = infoStorage.dataset.userid;
     localStorage.setItem('userid', userId);
+}
+
+function getCurrentRoomIfExists() {
+    const userId = localStorage.getItem('userid')
+    data_handler._api_get(`/current-room/${userId}`, joinToCurrentRoom)
+}
+
+function joinToCurrentRoom(data) {
+    if (data !== 'No room') {
+        socket.emit('game-join', JSON.stringify({roomNumber: data.toString()}))
+    }
 }
 
 function addCreatingRoomFunctionality() {

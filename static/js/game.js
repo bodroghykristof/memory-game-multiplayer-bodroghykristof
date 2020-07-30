@@ -33,6 +33,7 @@ function init() {
 function setupConnection() {
     const info = JSON.stringify({roomNumber: roomNumber})
     socket.emit('game-join', info);
+    console.log(info)
 }
 
 function createMap() {

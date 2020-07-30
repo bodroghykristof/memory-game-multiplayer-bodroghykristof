@@ -81,6 +81,15 @@ def delete_room():
     return jsonify(room_id)
 
 
+@app.route('/current-room/<id>')
+def get_current_room(id):
+    current_room_entry = business.get_current_room(id)
+    print(current_room_entry)
+    if current_room_entry:
+        return jsonify(current_room_entry['id'])
+    return 'No room'
+
+
 @app.route('/game')
 @authenticated_only
 def game():
@@ -98,16 +107,17 @@ def logout():
 @socketio.on('create')
 def create_new_room(room_info):
     info_object = json.loads(room_info)
-    print(info_object)
     room_number = info_object['roomNumber']
     join_room(room_number)
     emit('room-creation', room_info, broadcast=True)
 
 
 @socketio.on('game-join')
-def create_new_room(room_info):
+def join_current_room(room_info):
     info_object = json.loads(room_info)
+    print(info_object)
     room_number = info_object['roomNumber']
+    print(room_number)
     join_room(room_number)
 
 
@@ -128,6 +138,7 @@ def join_open_room(room_info):
 @socketio.on('leave')
 def leave_current_room(room):
     leave_room(room)
+    session.pop('room', None)
     # TODO: real-time update of deleted rooms
 
 
