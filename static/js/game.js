@@ -31,6 +31,7 @@ function init() {
     initScoreBoard();
     createMap();
     findOutStarterPlayer();
+    // addModalActivity();
     socket.addEventListener('first-guess', showOthersFirstIcon)
     socket.addEventListener('second-guess', endOthersRound)
     window.addEventListener('win', endGame)
@@ -191,7 +192,17 @@ function showModal(situation) {
         default:
             document.querySelector('.game-result').innerHTML = "End of tha game! It's a draw!";
     }
+    document.querySelector('#player-one-decision-name').innerHTML = localStorage.getItem('username');
+    document.querySelector('#player-two-decision-name').innerHTML = localStorage.getItem('opponent');
     $('#winModal').modal({backdrop: 'static', keyboard: false});
 }
+
+// function addModalActivity() {
+//     document.querySelector('#new-game-button').addEventListener('click', startNewGame)
+// }
+
+// function startNewGame() {
+//
+// }
 
 init();

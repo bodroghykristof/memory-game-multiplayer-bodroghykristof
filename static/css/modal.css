@@ -223,3 +223,13 @@
     max-width: 1140px;
   }
 }
+
+#decision-table {
+  margin-left: 30%;
+  width: 40%;
+}
+
+#decision-table td {
+  text-align: left;
+  width: 50%;
+}
