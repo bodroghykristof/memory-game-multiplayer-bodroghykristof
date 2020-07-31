@@ -34,6 +34,7 @@ function init() {
     socket.addEventListener('first-guess', showOthersFirstIcon)
     socket.addEventListener('second-guess', endOthersRound)
     window.addEventListener('win', endGame)
+    showModal('win')
 }
 
 function setupConnection() {
@@ -117,7 +118,7 @@ function showIcon() {
                 document.querySelector(' #player-one-score').innerHTML = (parseInt(currentScore) + 1).toString();
                 checkForEndGame();
             }
-        }, 2000)
+        }, 0)
     } else {
         this.removeEventListener('click', showIcon)
         socket.emit('first-guess', dataToServer)
@@ -150,7 +151,7 @@ function endOthersRound(data) {
             checkForEndGame();
         }
         addShowingFunctionality();
-    }, 2000);
+    }, 0);
 }
 
 function checkForEndGame() {
@@ -182,15 +183,15 @@ function endGame() {
 function showModal(situation) {
     switch (situation) {
         case 'win':
-            document.querySelector('.modal-body').innerHTML = 'Congratulations! You won!';
+            document.querySelector('.game-result').innerHTML = 'Congratulations! You won!';
             break
         case 'loose':
-            document.querySelector('.modal-body').innerHTML = 'Oooops, you lost...';
+            document.querySelector('.game-result').innerHTML = 'Oooops, you lost...';
             break
         default:
-            document.querySelector('.modal-body').innerHTML = "End of tha game! It's a draw!";
+            document.querySelector('.game-result').innerHTML = "End of tha game! It's a draw!";
     }
-    $('#winModal').modal();
+    $('#winModal').modal({backdrop: 'static', keyboard: false});
 }
 
 init();
