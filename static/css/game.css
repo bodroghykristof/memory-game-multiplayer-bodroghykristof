@@ -33,3 +33,16 @@
 .inactive {
     visibility: hidden;
 }
+
+.score-board {
+    text-align: center;
+}
+
+#score-table {
+    margin: auto;
+    width: 40%;
+}
+
+#score-table tr {
+    margin-bottom: 10px;
+}
