@@ -27,6 +27,7 @@ const classArray = [
 function init() {
     setupConnection();
     initVariables();
+    initScoreBoard();
     createMap();
     findOutStarterPlayer();
     socket.addEventListener('first-guess', showOthersFirstIcon)
@@ -40,6 +41,11 @@ function setupConnection() {
 
 function initVariables() {
     localStorage.setItem('rounds', '0');
+}
+
+function initScoreBoard() {
+    document.querySelector('#player-one-name').innerHTML = localStorage.getItem('username')
+    document.querySelector('#player-two-name').innerHTML = localStorage.getItem('opponent')
 }
 
 function createMap() {
@@ -105,6 +111,8 @@ function showIcon() {
                 guessTwo.classList.remove('active')
                 guessOne.classList.add('inactive')
                 guessTwo.classList.add('inactive')
+                let currentScore = document.querySelector(' #player-one-score').innerHTML;
+                document.querySelector(' #player-one-score').innerHTML = (parseInt(currentScore) + 1).toString();
             }
         }, 2000)
     } else {
@@ -130,10 +138,12 @@ function endOthersRound(data) {
             hideIcon(guessOne.closest('td'));
             hideIcon(guessTwo.closest('td'))
         } else {
-            guessOne.closest('td').classList.remove('active')
-            guessTwo.closest('td').classList.remove('active')
-            guessOne.closest('td').classList.add('inactive')
-            guessTwo.closest('td').classList.add('inactive')
+            guessOne.closest('td').classList.remove('active');
+            guessTwo.closest('td').classList.remove('active');
+            guessOne.closest('td').classList.add('inactive');
+            guessTwo.closest('td').classList.add('inactive');
+            let currentScore = document.querySelector(' #player-two-score').innerHTML;
+            document.querySelector(' #player-two-score').innerHTML = (parseInt(currentScore) + 1).toString();
         }
         addShowingFunctionality();
     }, 2000);

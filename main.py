@@ -135,6 +135,8 @@ def join_open_room(room_info):
     join_room(room_number)
     generated_map = json.dumps(business.generate_map(6))
     emit('save_map', generated_map, room=room_number)
+    user_info = json.dumps({'username': username, 'userid': user_id})
+    emit('set_opponent', user_info, room=room_number)
     emit('start_game', room_number, room=room_number)
     close_room_data = json.dumps({'roomNumber': room_number, 'usernameTwo': username})
     emit('close_room', close_room_data, broadcast=True)
