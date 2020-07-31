@@ -46,3 +46,7 @@
 #score-table tr {
     margin-bottom: 10px;
 }
+
+#score-table td, #score-table th {
+    width: 50%;
+}
