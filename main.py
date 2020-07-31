@@ -121,9 +121,7 @@ def create_new_room(room_info):
 @socketio.on('game-join')
 def join_current_room(room_info):
     info_object = json.loads(room_info)
-    print(info_object)
     room_number = info_object['roomNumber']
-    print(room_number)
     join_room(room_number)
 
 
@@ -140,20 +138,12 @@ def join_open_room(room_info):
     emit('start_game', room_number, room=room_number)
     close_room_data = json.dumps({'roomNumber': room_number, 'usernameTwo': username})
     emit('close_room', close_room_data, broadcast=True)
-    # TODO: real-time update of closing rooms
 
 
 @socketio.on('leave')
 def leave_current_room(room):
     leave_room(room)
     emit('remove-room', room, broadcast=True)
-    # TODO: real-time update of deleted rooms
-
-
-@socketio.on('ready')
-def get_message(room_number):
-    generated_map = business.generate_map(10)
-    emit('map-created', generated_map, room=room_number)
 
 
 @socketio.on('first-guess')
