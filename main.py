@@ -92,7 +92,6 @@ def get_current_room(id):
 @app.route('/starter/<room_id>')
 def get_starter_player(room_id):
     starter_player_id = business.get_starter_by_room(room_id)
-    print(starter_player_id)
     return jsonify(starter_player_id)
 
 
@@ -133,7 +132,7 @@ def join_open_room(room_info):
     user_id = info_object['userid']
     business.mark_room_as_closed(room_number, username, user_id)
     join_room(room_number)
-    generated_map = json.dumps(business.generate_map(6))
+    generated_map = json.dumps(business.generate_map(3))
     emit('save_map', generated_map, room=room_number)
     user_info = json.dumps({'username': username, 'userid': user_id})
     emit('set_opponent', user_info, room=room_number)
@@ -161,7 +160,18 @@ def second_guess(data):
     received_data = json.loads(data);
     room_number = received_data['roomNumber']
     cell_number = received_data['cellNumber']
-    emit('second-guess', cell_number, room=room_number, include_self=False)
+    emit('second-guess', cell_number, room=str(room_number), include_self=False)
+
+
+@socketio.on('ask-new-game')
+def ask_new_game(room_number):
+    emit('ask-new-game', room=room_number, include_self=False)
+
+
+@socketio.on('replay-game')
+def replay_game(room_number):
+    generated_map = json.dumps(business.generate_map(3))
+    emit('replay-game', generated_map, room=room_number)
 
 
 if __name__ == '__main__':

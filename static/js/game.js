@@ -12,17 +12,18 @@ const classArray = [
     'fa-bell',
     'fa-bicycle',
     'fa-bullseye',
-    'fa-bug',
-    'fa-coffee',
-    'fa-bolt',
-    'fa-cube',
-    'fa-diamond',
-    'fa-envelope',
-    'fa-eye',
-    'fa-rss',
-    'fa-gift',
-    'fa-hashtag'
-]
+    'fa-bug']
+//
+//     'fa-coffee',
+//     'fa-bolt',
+//     'fa-cube',
+//     'fa-diamond',
+//     'fa-envelope',
+//     'fa-eye',
+//     'fa-rss',
+//     'fa-gift',
+//     'fa-hashtag'
+// ]
 
 function init() {
     setupConnection();
@@ -30,8 +31,13 @@ function init() {
     initScoreBoard();
     createMap();
     findOutStarterPlayer();
+    addModalActivity();
     socket.addEventListener('first-guess', showOthersFirstIcon)
     socket.addEventListener('second-guess', endOthersRound)
+    socket.addEventListener('ask-new-game', displayNewGameTick)
+    socket.addEventListener('replay-game', replayGame)
+    window.addEventListener('win', endGame)
+    // showModal('win')
 }
 
 function setupConnection() {
@@ -113,6 +119,7 @@ function showIcon() {
                 guessTwo.classList.add('inactive')
                 let currentScore = document.querySelector(' #player-one-score').innerHTML;
                 document.querySelector(' #player-one-score').innerHTML = (parseInt(currentScore) + 1).toString();
+                checkForEndGame();
             }
         }, 2000)
     } else {
@@ -144,11 +151,19 @@ function endOthersRound(data) {
             guessTwo.closest('td').classList.add('inactive');
             let currentScore = document.querySelector(' #player-two-score').innerHTML;
             document.querySelector(' #player-two-score').innerHTML = (parseInt(currentScore) + 1).toString();
+            checkForEndGame();
         }
         addShowingFunctionality();
     }, 2000);
 }
 
+function checkForEndGame() {
+    const activeCells = document.querySelectorAll('.active');
+    if (activeCells.length === 0) {
+        let winEvent = new CustomEvent('win', {bubbles: true, cancelable: true});
+        window.dispatchEvent(winEvent);
+    }
+}
 
 function hideIcon(cell) {
     const icon = cell.querySelector('i');
@@ -156,5 +171,54 @@ function hideIcon(cell) {
     icon.classList.add('fa-question');
 }
 
+function endGame() {
+    const ownScore = parseInt(document.querySelector('#player-one-score').innerHTML);
+    const opponentScore = parseInt(document.querySelector('#player-two-score').innerHTML);
+    if (opponentScore < ownScore) {
+        showModal('win');
+    } else if (ownScore < opponentScore) {
+        showModal('loose');
+    } else {
+        showModal('draw');
+    }
+}
+
+function showModal(situation) {
+    switch (situation) {
+        case 'win':
+            document.querySelector('.game-result').innerHTML = 'Congratulations! You won!';
+            break
+        case 'loose':
+            document.querySelector('.game-result').innerHTML = 'Oooops, you lost...';
+            break
+        default:
+            document.querySelector('.game-result').innerHTML = "End of tha game! It's a draw!";
+    }
+    document.querySelector('#player-one-decision-name').innerHTML = localStorage.getItem('username');
+    document.querySelector('#player-two-decision-name').innerHTML = localStorage.getItem('opponent');
+    $('#winModal').modal({backdrop: 'static', keyboard: false});
+}
+
+function addModalActivity() {
+    document.querySelector('#new-game-button').addEventListener('click', startNewGame)
+}
+
+function startNewGame() {
+    document.querySelector('#player-one-decision-content').innerHTML = `<i class="fa fa-check" aria-hidden="true"></i>`;
+    socket.emit('ask-new-game', localStorage.getItem('room'));
+}
+
+function displayNewGameTick() {
+    const tickElement = `<i class="fa fa-check" aria-hidden="true"></i>`
+    document.querySelector('#player-two-decision-content').innerHTML = tickElement;
+    if (document.querySelector('#player-one-decision-content').innerHTML === tickElement) {
+        socket.emit('replay-game', localStorage.getItem('room'));
+    }
+}
+
+function replayGame(map) {
+    localStorage.setItem('map', map);
+    window.location.replace('/game');
+}
 
 init();
