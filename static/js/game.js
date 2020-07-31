@@ -171,13 +171,26 @@ function endGame() {
     const ownScore = parseInt(document.querySelector('#player-one-score').innerHTML);
     const opponentScore = parseInt(document.querySelector('#player-two-score').innerHTML);
     if (opponentScore < ownScore) {
-        $('#winModal').modal()
+        showModal('win');
     } else if (ownScore < opponentScore) {
-        $('#winModal').modal()
+        showModal('loose');
     } else {
-        $('#winModal').modal()
+        showModal('draw');
     }
 }
 
+function showModal(situation) {
+    switch (situation) {
+        case 'win':
+            document.querySelector('.modal-body').innerHTML = 'Congratulations! You won!';
+            break
+        case 'loose':
+            document.querySelector('.modal-body').innerHTML = 'Oooops, you lost...';
+            break
+        default:
+            document.querySelector('.modal-body').innerHTML = "End of tha game! It's a draw!";
+    }
+    $('#winModal').modal();
+}
 
 init();
