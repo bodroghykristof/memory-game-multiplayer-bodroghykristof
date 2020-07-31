@@ -35,8 +35,9 @@ function init() {
     socket.addEventListener('first-guess', showOthersFirstIcon)
     socket.addEventListener('second-guess', endOthersRound)
     socket.addEventListener('ask-new-game', displayNewGameTick)
+    socket.addEventListener('replay-game', replayGame)
     window.addEventListener('win', endGame)
-    showModal('win')
+    // showModal('win')
 }
 
 function setupConnection() {
@@ -120,7 +121,7 @@ function showIcon() {
                 document.querySelector(' #player-one-score').innerHTML = (parseInt(currentScore) + 1).toString();
                 checkForEndGame();
             }
-        }, 0)
+        }, 2000)
     } else {
         this.removeEventListener('click', showIcon)
         socket.emit('first-guess', dataToServer)
@@ -153,7 +154,7 @@ function endOthersRound(data) {
             checkForEndGame();
         }
         addShowingFunctionality();
-    }, 0);
+    }, 2000);
 }
 
 function checkForEndGame() {
@@ -208,8 +209,16 @@ function startNewGame() {
 }
 
 function displayNewGameTick() {
-    console.log('Ready')
-    document.querySelector('#player-two-decision-content').innerHTML = `<i class="fa fa-check" aria-hidden="true"></i>`;
+    const tickElement = `<i class="fa fa-check" aria-hidden="true"></i>`
+    document.querySelector('#player-two-decision-content').innerHTML = tickElement;
+    if (document.querySelector('#player-one-decision-content').innerHTML === tickElement) {
+        socket.emit('replay-game', localStorage.getItem('room'));
+    }
+}
+
+function replayGame(map) {
+    localStorage.setItem('map', map);
+    window.location.replace('/game');
 }
 
 init();

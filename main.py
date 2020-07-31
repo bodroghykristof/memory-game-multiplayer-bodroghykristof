@@ -165,8 +165,13 @@ def second_guess(data):
 
 @socketio.on('ask-new-game')
 def ask_new_game(room_number):
-    print(room_number)
     emit('ask-new-game', room=room_number, include_self=False)
+
+
+@socketio.on('replay-game')
+def replay_game(room_number):
+    generated_map = json.dumps(business.generate_map(3))
+    emit('replay-game', generated_map, room=room_number)
 
 
 if __name__ == '__main__':
