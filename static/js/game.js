@@ -108,6 +108,7 @@ function showIcon() {
             }
         }, 2000)
     } else {
+        this.removeEventListener('click', showIcon)
         socket.emit('first-guess', dataToServer)
     }
 }
