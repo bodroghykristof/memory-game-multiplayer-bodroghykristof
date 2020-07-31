@@ -133,7 +133,7 @@ def join_open_room(room_info):
     user_id = info_object['userid']
     business.mark_room_as_closed(room_number, username, user_id)
     join_room(room_number)
-    generated_map = json.dumps(business.generate_map(6))
+    generated_map = json.dumps(business.generate_map(3))
     emit('save_map', generated_map, room=room_number)
     user_info = json.dumps({'username': username, 'userid': user_id})
     emit('set_opponent', user_info, room=room_number)

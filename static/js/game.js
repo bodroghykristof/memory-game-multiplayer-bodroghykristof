@@ -12,17 +12,18 @@ const classArray = [
     'fa-bell',
     'fa-bicycle',
     'fa-bullseye',
-    'fa-bug',
-    'fa-coffee',
-    'fa-bolt',
-    'fa-cube',
-    'fa-diamond',
-    'fa-envelope',
-    'fa-eye',
-    'fa-rss',
-    'fa-gift',
-    'fa-hashtag'
-]
+    'fa-bug']
+//
+//     'fa-coffee',
+//     'fa-bolt',
+//     'fa-cube',
+//     'fa-diamond',
+//     'fa-envelope',
+//     'fa-eye',
+//     'fa-rss',
+//     'fa-gift',
+//     'fa-hashtag'
+// ]
 
 function init() {
     setupConnection();
@@ -32,6 +33,7 @@ function init() {
     findOutStarterPlayer();
     socket.addEventListener('first-guess', showOthersFirstIcon)
     socket.addEventListener('second-guess', endOthersRound)
+    window.addEventListener('win', endGame)
 }
 
 function setupConnection() {
@@ -113,6 +115,7 @@ function showIcon() {
                 guessTwo.classList.add('inactive')
                 let currentScore = document.querySelector(' #player-one-score').innerHTML;
                 document.querySelector(' #player-one-score').innerHTML = (parseInt(currentScore) + 1).toString();
+                checkForEndGame();
             }
         }, 2000)
     } else {
@@ -144,16 +147,36 @@ function endOthersRound(data) {
             guessTwo.closest('td').classList.add('inactive');
             let currentScore = document.querySelector(' #player-two-score').innerHTML;
             document.querySelector(' #player-two-score').innerHTML = (parseInt(currentScore) + 1).toString();
+            checkForEndGame();
         }
         addShowingFunctionality();
     }, 2000);
 }
 
+function checkForEndGame() {
+    const activeCells = document.querySelectorAll('.active');
+    if (activeCells.length === 0) {
+        let winEvent = new CustomEvent('win', {bubbles: true, cancelable: true});
+        window.dispatchEvent(winEvent);
+    }
+}
 
 function hideIcon(cell) {
     const icon = cell.querySelector('i');
     icon.classList.remove(cell.dataset.solvedclass);
     icon.classList.add('fa-question');
+}
+
+function endGame() {
+    const ownScore = parseInt(document.querySelector('#player-one-score').innerHTML);
+    const opponentScore = parseInt(document.querySelector('#player-two-score').innerHTML);
+    if (opponentScore < ownScore) {
+        alert('End of the game, you won!')
+    } else if (ownScore < opponentScore) {
+        alert('End of the game, you lost!')
+    } else {
+        alert("End of the game, it's a draw!")
+    }
 }
 
 
