@@ -13,7 +13,26 @@
         <input type="text"><br>
         <button>Send</button>
     </div>
-    <div class="game-field"></div>
+    <div class="game-field">
+        <h1>Find the pairs!</h1>
+    </div>
+    <div class="score-board">
+        <h3>Scoreboard</h3><br>
+        <table id="score-table">
+            <thead>
+                <tr>
+                    <th id="player-one-name"></th>
+                    <th id="player-two-name"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="player-one-score">0</td>
+                    <td id="player-two-score">0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" type="text/javascript" defer></script>
     <script src="{{ url_for('static', filename='js/game.js') }}" type="module" defer></script>
 </body>

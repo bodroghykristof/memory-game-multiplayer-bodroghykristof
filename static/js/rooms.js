@@ -12,8 +12,9 @@ function init() {
     socket.addEventListener('room-creation', displayOtherPlayersNewRoom);
     socket.addEventListener('remove-room', removeOtherPlayersRoom);
     socket.addEventListener('save_map', saveMap);
-    socket.addEventListener('start_game', startNewGame);
+    socket.addEventListener('set_opponent', setOpponent);
     socket.addEventListener('close_room', closeRoomWhenGameStarts);
+    socket.addEventListener('start_game', startNewGame);
 }
 
 function saveUserDataToLocalStorage() {
@@ -75,7 +76,7 @@ function createNewRoomElement(roomNumber, username, selector) {
     waitingRoom.dataset.roomId = roomNumber;
     waitingRoom.innerHTML = `
         <h4>Room number ${roomNumber}</h4>
-        <p><b>Player one:</b> ${username}</p>
+        <p><b>Player one:</b> <span>${username}</span></p>
         <p class="wait-paragraph">Waiting for another player to join...</p>
     `
     if (selector === '.join-room') {
@@ -114,6 +115,8 @@ function addJoiningRoomFunctionality() {
 
 function joinRoom() {
     const roomNumber = this.closest('.room').dataset.roomId;
+    const opponentName = this.closest('.room').querySelector('p span').innerHTML;
+    localStorage.setItem('opponent', opponentName);
     const username = localStorage.getItem('username');
     const userid = localStorage.getItem('userid');
     const roomInfo =  {username: username, roomNumber: roomNumber.toString(), userid: userid}
@@ -142,9 +145,11 @@ function saveMap(map) {
     localStorage.setItem('map', map);
 }
 
-function startNewGame(data) {
-    localStorage.setItem('room', data)
-    window.location.replace('/game');
+function setOpponent(opponentInfo) {
+    const userId = JSON.parse(opponentInfo).userid.toString();
+    if (userId !== localStorage.getItem('userid')) {
+        localStorage.setItem('opponent', JSON.parse(opponentInfo).username)
+    }
 }
 
 function closeRoomWhenGameStarts(data) {
@@ -158,8 +163,13 @@ function closeRoomWhenGameStarts(data) {
     for (let room of openRooms) {
         if (room.dataset.roomId === roomNumber) {
             document.querySelector('.spectate-room').appendChild(room);
-            room.querySelector('.wait-paragraph').innerHTML = `<b>Player two: </b>${username}`;
+            room.querySelector('.wait-paragraph').innerHTML = `<b>Player two:</b> <span>${username}</span>`;
             room.querySelector('button').innerHTML = `Spectate`;
         }
     }
+}
+
+function startNewGame(data) {
+    localStorage.setItem('room', data)
+    window.location.replace('/game');
 }
