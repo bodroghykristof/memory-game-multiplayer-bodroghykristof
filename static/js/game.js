@@ -171,11 +171,11 @@ function endGame() {
     const ownScore = parseInt(document.querySelector('#player-one-score').innerHTML);
     const opponentScore = parseInt(document.querySelector('#player-two-score').innerHTML);
     if (opponentScore < ownScore) {
-        alert('End of the game, you won!')
+        $('#winModal').modal()
     } else if (ownScore < opponentScore) {
-        alert('End of the game, you lost!')
+        $('#winModal').modal()
     } else {
-        alert("End of the game, it's a draw!")
+        $('#winModal').modal()
     }
 }
 
