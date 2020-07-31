@@ -31,9 +31,10 @@ function init() {
     initScoreBoard();
     createMap();
     findOutStarterPlayer();
-    // addModalActivity();
+    addModalActivity();
     socket.addEventListener('first-guess', showOthersFirstIcon)
     socket.addEventListener('second-guess', endOthersRound)
+    socket.addEventListener('ask-new-game', displayNewGameTick)
     window.addEventListener('win', endGame)
     showModal('win')
 }
@@ -197,12 +198,18 @@ function showModal(situation) {
     $('#winModal').modal({backdrop: 'static', keyboard: false});
 }
 
-// function addModalActivity() {
-//     document.querySelector('#new-game-button').addEventListener('click', startNewGame)
-// }
+function addModalActivity() {
+    document.querySelector('#new-game-button').addEventListener('click', startNewGame)
+}
 
-// function startNewGame() {
-//
-// }
+function startNewGame() {
+    document.querySelector('#player-one-decision-content').innerHTML = `<i class="fa fa-check" aria-hidden="true"></i>`;
+    socket.emit('ask-new-game', localStorage.getItem('room'));
+}
+
+function displayNewGameTick() {
+    console.log('Ready')
+    document.querySelector('#player-two-decision-content').innerHTML = `<i class="fa fa-check" aria-hidden="true"></i>`;
+}
 
 init();

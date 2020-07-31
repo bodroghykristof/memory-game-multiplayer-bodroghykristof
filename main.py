@@ -92,7 +92,6 @@ def get_current_room(id):
 @app.route('/starter/<room_id>')
 def get_starter_player(room_id):
     starter_player_id = business.get_starter_by_room(room_id)
-    print(starter_player_id)
     return jsonify(starter_player_id)
 
 
@@ -161,7 +160,13 @@ def second_guess(data):
     received_data = json.loads(data);
     room_number = received_data['roomNumber']
     cell_number = received_data['cellNumber']
-    emit('second-guess', cell_number, room=room_number, include_self=False)
+    emit('second-guess', cell_number, room=str(room_number), include_self=False)
+
+
+@socketio.on('ask-new-game')
+def ask_new_game(room_number):
+    print(room_number)
+    emit('ask-new-game', room=room_number, include_self=False)
 
 
 if __name__ == '__main__':
